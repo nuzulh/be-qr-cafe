@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { UserEntity } from "../entities";
 import { UserService } from "../services";
-import { GetRequestQuery, JsonResponse, PaginationResponse, ResponseMessages, UserRoles } from "../consts";
+import { GetRequestQuery, JsonResponse, ResponseMessages, UserRoles } from "../consts";
 import { getFindManyOptions, isValidUuid, jsonResponse, paginateResponse } from "../utils";
 
 export default class UserController {

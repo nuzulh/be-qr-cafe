@@ -5,8 +5,8 @@ export const paginateResponse = (
   page?: number,
   limit?: number,
 ): PaginationResponse => {
-  const current = page || DefaultQueries.PAGE;
-  const last = Math.ceil(count / (limit || DefaultQueries.LIMIT));
+  const current = (page && parseInt(`${page}`)) || DefaultQueries.PAGE;
+  const last = Math.ceil(count / ((limit && parseInt(`${limit}`)) || DefaultQueries.LIMIT));
   const next = current + 1 > last ? undefined : current + 1;
   const prev = current - 1 < 1 ? undefined : current - 1;
 
