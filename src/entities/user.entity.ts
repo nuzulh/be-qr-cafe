@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
   DeleteDateColumn,
   BeforeInsert,
+  BeforeUpdate,
 } from "typeorm";
 import bcrypt from "bcryptjs";
 import { UserRoles } from "../consts";
@@ -21,7 +22,7 @@ export class UserEntity extends BaseEntity {
   @Column({ length: 100 })
   name!: string;
 
-  @Column({ length: 100, nullable: true, unique: true })
+  @Column({ length: 32, nullable: true, unique: true })
   username!: string;
 
   @Column({ length: 50, nullable: true, unique: true })
@@ -50,7 +51,12 @@ export class UserEntity extends BaseEntity {
   deletedAt!: Date;
 
   @BeforeInsert()
-  async hashPassword() {
+  async hashPasswordToInsert() {
+    this.password = await bcrypt.hash(this.password, 12);
+  }
+
+  @BeforeUpdate()
+  async hashPasswordToUpdate() {
     this.password = await bcrypt.hash(this.password, 12);
   }
 }

@@ -1,5 +1,10 @@
 import { FindOptionsSelect } from "typeorm";
-import { OrderEntity, ProductEntity, TableEntity, UserEntity } from "../entities";
+import {
+  OrderEntity,
+  ProductEntity,
+  TableEntity,
+  UserEntity,
+} from "../entities";
 
 export const userOptionsSelect: FindOptionsSelect<UserEntity> = {
   id: true,

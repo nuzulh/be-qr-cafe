@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { UserEntity } from "../entities";
 import { UserService } from "../services";
-import { GetRequestQuery, JsonResponse, ResponseMessages, UserRoles } from "../consts";
+import { GetRequestQuery, ResponseMessages, UserRoles } from "../consts";
 import { getFindManyOptions, jsonResponse, paginateResponse } from "../utils";
 import { userOptionsSelect } from "../consts";
+import { UpdateResult } from "typeorm";
 
 export default class UserController {
   static getUsersHandler = async (
@@ -13,26 +14,32 @@ export default class UserController {
   ) => {
     try {
       const { id, page, limit }: Partial<GetRequestQuery> = req.query;
-
-      if (id) res.json(jsonResponse<UserEntity>({
+      const result = jsonResponse<UserEntity>({
         error: false,
         message: ResponseMessages.GET_SUCCESS,
-        data: await UserService.findUserById(id),
-      }));
-      else {
+      });
+
+      if (id) {
+        result.data = await UserService.findUserById(
+          id,
+          userOptionsSelect,
+        );
+        result.error = result.data ? false : true;
+        result.message = ResponseMessages[
+          result.data ? "GET_SUCCESS" : "NOT_FOUND"
+        ];
+      } else {
         const [data, count] = await UserService.findUsers(
           getFindManyOptions<UserEntity>(
             req.query,
             userOptionsSelect,
           ),
         );
-        res.json(jsonResponse<UserEntity>({
-          error: false,
-          message: ResponseMessages.GET_SUCCESS,
-          data,
-          pagination: paginateResponse(count, page, limit),
-        }));
+        result.data = data;
+        result.pagination = paginateResponse(count, page, limit);
       }
+
+      res.json(result);
 
     } catch (err: any) {
       next(err);
@@ -45,7 +52,22 @@ export default class UserController {
     next: NextFunction,
   ) => {
     try {
+      const { id }: Partial<GetRequestQuery> = req.query;
+      const result = jsonResponse<UpdateResult>({
+        error: true,
+        message: ResponseMessages.PATCH_FAILED,
+      });
 
+      if (id) {
+        result.data = await UserService.updateUser(
+          id,
+          req.body,
+        );
+        result.error = false;
+        result.message = ResponseMessages.PATCH_SUCCESS;
+      }
+
+      res.json(result);
 
     } catch (err: any) {
       next(err);
@@ -58,7 +80,19 @@ export default class UserController {
     next: NextFunction,
   ) => {
     try {
+      const { id }: Partial<GetRequestQuery> = req.query;
+      const result = jsonResponse<UpdateResult>({
+        error: true,
+        message: ResponseMessages.DELETE_FAILED,
+      });
 
+      if (id) {
+        result.data = await UserService.deleteUser(id);
+        result.error = false;
+        result.message = ResponseMessages.DELETE_SUCCESS;
+      }
+
+      res.json(result);
 
     } catch (err: any) {
       next(err);

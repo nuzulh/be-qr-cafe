@@ -5,6 +5,8 @@ export enum ResponseMessages {
   GET_FAILED = "Failed to store data",
   PATCH_SUCCESS = "Data updated successfully",
   PATCH_FAILED = "Failed to update data",
+  DELETE_SUCCESS = "Data deleted successfully",
+  DELETE_FAILED = "Failed to delete data",
   SIGNIN_SUCCESS = "User logged in successfully",
   SIGNIN_FAILED = "Failed to log in",
   SIGNUP_SUCCESS = "User registrated successfully",

@@ -1,4 +1,4 @@
-import { FindOptionsOrderValue } from "typeorm";
+import { FindOptionsOrderValue, UpdateResult } from "typeorm";
 
 export declare type GetRequestQuery = {
   id?: string;
@@ -21,7 +21,7 @@ export declare type PaginationResponse = {
 export declare type JsonResponse<T> = {
   error: boolean;
   message: string;
-  data?: Partial<T> | Partial<T>[] | null;
+  data?: Partial<T> | Partial<T>[] | UpdateResult | null;
   pagination?: PaginationResponse;
-  access_token?: string;
+  accessToken?: string;
 };

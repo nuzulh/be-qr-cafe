@@ -48,13 +48,11 @@ export default class AuthController {
         message: ResponseMessages.INVALID_CREDENTIALS,
       }));
 
-      const accessToken = signJwt({ username });
-
       res.json(jsonResponse<UserEntity>({
         error: false,
         message: ResponseMessages.SIGNIN_SUCCESS,
         data: { username, role: user.role },
-        access_token: accessToken,
+        accessToken: signJwt({ username }),
       }));
 
     } catch (err: any) {

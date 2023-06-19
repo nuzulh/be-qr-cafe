@@ -1,9 +1,13 @@
-import { FindManyOptions } from "typeorm";
+import { FindManyOptions, FindOptionsSelect, UpdateResult } from "typeorm";
 import { db } from "../../config/ormconfig";
 import { UserEntity } from "../entities";
-import { SignUpUserInput } from "../schemas";
 import bcrypt from "bcryptjs";
-import { userOptionsSelect } from "../consts";
+import {
+  DeleteUserIdInput,
+  SignUpUserInput,
+  UpdateUserIdInput,
+  UpdateUserInput,
+} from "../schemas";
 
 export default class UserService {
   static repository = db.getRepository(UserEntity);
@@ -13,7 +17,7 @@ export default class UserService {
   ): Promise<Partial<UserEntity>> =>
     await this.repository.manager.save(
       this.repository.manager.create(UserEntity, input),
-    ).then((res) => ({
+    ).then((res: UserEntity) => ({
       id: res.id,
       name: res.name,
       username: res.username,
@@ -29,17 +33,34 @@ export default class UserService {
 
   static findUserById = async (
     id: string,
+    select?: FindOptionsSelect<UserEntity>,
   ): Promise<UserEntity | null> =>
     await this.repository.findOne(
-      { where: { id }, select: userOptionsSelect },
+      { where: { id }, select },
     );
 
   static findUserByUsername = async (
     username: string,
+    select?: FindOptionsSelect<UserEntity>,
   ): Promise<UserEntity | null> =>
     await this.repository.findOne(
-      { where: { username }, select: userOptionsSelect },
+      { where: { username }, select },
     );
+
+  static updateUser = async (
+    id: UpdateUserIdInput,
+    input: UpdateUserInput,
+  ): Promise<UpdateResult> => {
+    if (input.password)
+      input.password = await bcrypt.hash(input.password, 12);
+    return await this.repository.update(id, input);
+  };
+
+  static deleteUser = async (
+    id: DeleteUserIdInput,
+  ): Promise<UpdateResult> =>
+    await this.repository.softDelete(id);
+
 
   static comparePasswords = async (
     password: string,
