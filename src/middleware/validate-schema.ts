@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { AnyZodObject, ZodError } from "zod";
+import { jsonResponse } from "../utils";
 
 export const validate = (schema: AnyZodObject) => (
   req: Request,
@@ -15,13 +16,15 @@ export const validate = (schema: AnyZodObject) => (
     next();
 
   } catch (err: any) {
-    if (err instanceof ZodError) return res.json({
-      error: true,
-      message: err
-        .errors
-        .map((e) => e.message)
-        .join(", "),
-    });
+    if (err instanceof ZodError) return res.json(
+      jsonResponse({
+        error: true,
+        message: err
+          .errors
+          .map((e) => e.message)
+          .join(" | "),
+      }),
+    );
     next(err);
   }
 };

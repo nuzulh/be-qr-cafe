@@ -1,29 +1,30 @@
-import { EntityMetadata, FindManyOptions, Like } from "typeorm";
+import { FindManyOptions, FindOptionsSelect, Like } from "typeorm";
 import { DefaultQueries, GetRequestQuery } from "../consts";
 
 export const getFindManyOptions = <T>(
   requestQueries: GetRequestQuery,
-  metadata: EntityMetadata,
+  optionsSelect: FindOptionsSelect<T>,
 ): FindManyOptions<T> => {
   const { page, limit, orderBy, order, searchBy, search } = requestQueries;
-  const columns = metadata.columns.map((col) => col.propertyName);
-  const result: FindManyOptions<T> = Object.assign({
+  const columns = Object.keys(optionsSelect);
+  let result: FindManyOptions<T> = {
     skip: page
       ? (page - 1) * (limit || DefaultQueries.LIMIT)
       : DefaultQueries.PAGE,
     take: limit || DefaultQueries.LIMIT,
-  });
+    select: optionsSelect,
+  };
 
   if (orderBy && columns.includes(orderBy.toLowerCase())) {
     const orderOption: any = Object.assign({});
     orderOption[`${orderBy}`] = order || DefaultQueries.ORDER;
-    result["order"] = orderOption;
+    result.order = orderOption;
   }
 
   if (search && searchBy && columns.includes(searchBy.toLowerCase())) {
     const whereOption: any = Object.assign({});
     whereOption[`${searchBy}`] = Like("%" + search + "%");
-    result["where"] = whereOption;
+    result.where = whereOption;
   }
 
   return result;

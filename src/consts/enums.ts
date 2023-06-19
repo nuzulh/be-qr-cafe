@@ -17,6 +17,7 @@ export enum ResponseMessages {
   VALIDATION_FAILED = "Error appears while validating request data",
   USER_EXISTS = "User already exists",
   INVALID_CREDENTIALS = "Invalid username or password",
+  INVALID_ROLE = "Invalid role to access this resource",
 }
 
 export enum UserRoles {
@@ -60,7 +61,7 @@ export enum ProductSizes {
 export enum DefaultQueries {
   PAGE = 1,
   LIMIT = 10,
-  ORDER_BY = "created_at",
+  ORDER_BY = "updated_at",
   ORDER = "DESC",
   SEARCH_BY = "created_at",
 }

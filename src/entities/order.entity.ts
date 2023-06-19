@@ -10,7 +10,7 @@ import {
   ManyToOne,
 } from "typeorm";
 import { OrderStatuses } from "../consts";
-import { TableEntity, UserEntity, ProductEntity } from "./"
+import { TableEntity, UserEntity, ProductEntity } from "./";
 
 export type OrderStatus = "new" | "confirmed" | "payed" | "ready" | "done" | "canceled";
 
@@ -20,19 +20,19 @@ export class OrderEntity extends BaseEntity {
   id!: string;
 
   @ManyToOne(() => TableEntity, (table) => table.id)
-  table_id!: TableEntity;
+  table!: TableEntity;
 
   @ManyToOne(() => UserEntity, (user) => user.id)
-  user_id!: UserEntity;
+  user!: UserEntity;
 
   @OneToMany(() => ProductEntity, (product) => product.id)
   products!: ProductEntity[];
 
   @Column()
-  total_price!: number;
+  totalPrice!: number;
 
   @Column()
-  payment_method!: string;
+  paymentMethod!: string;
 
   @Column({
     type: "enum",
@@ -45,38 +45,38 @@ export class OrderEntity extends BaseEntity {
     type: "timestamptz",
     nullable: true,
   })
-  confirmed_at!: Date;
+  confirmedAt!: Date;
 
   @Column({
     type: "timestamptz",
     nullable: true,
   })
-  payed_at!: Date;
+  payedAt!: Date;
 
   @Column({
     type: "timestamptz",
     nullable: true,
   })
-  ready_at!: Date;
+  readyAt!: Date;
 
   @Column({
     type: "timestamptz",
     nullable: true,
   })
-  done_at!: Date;
+  doneAt!: Date;
 
   @Column({
     type: "timestamptz",
     nullable: true,
   })
-  canceled_at!: Date;
+  canceledAt!: Date;
 
   @CreateDateColumn({ type: "timestamptz" })
-  created_at!: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn({ type: "timestamptz" })
-  updated_at!: Date;
+  updatedAt!: Date;
 
   @DeleteDateColumn({ type: "timestamptz" })
-  deleted_at!: Date;
+  deletedAt!: Date;
 }

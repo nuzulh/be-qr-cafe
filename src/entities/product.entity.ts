@@ -47,11 +47,11 @@ export class ProductEntity extends BaseEntity {
   img!: string;
 
   @CreateDateColumn({ type: "timestamptz" })
-  created_at!: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn({ type: "timestamptz" })
-  updated_at!: Date;
+  updatedAt!: Date;
 
   @DeleteDateColumn({ type: "timestamptz" })
-  deleted_at!: Date;
+  deletedAt!: Date;
 }

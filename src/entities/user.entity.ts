@@ -28,7 +28,7 @@ export class UserEntity extends BaseEntity {
   email!: string;
 
   @Column({ length: 20, nullable: true, unique: true })
-  phone_number!: string;
+  phoneNumber!: string;
 
   @Column({ nullable: true })
   password!: string;
@@ -41,13 +41,13 @@ export class UserEntity extends BaseEntity {
   role!: UserRole;
 
   @CreateDateColumn({ type: "timestamptz" })
-  created_at!: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn({ type: "timestamptz" })
-  updated_at!: Date;
+  updatedAt!: Date;
 
   @DeleteDateColumn({ type: "timestamptz" })
-  deleted_at!: Date;
+  deletedAt!: Date;
 
   @BeforeInsert()
   async hashPassword() {

@@ -10,6 +10,7 @@ export const jsonResponse = <T>(
 
   if (args.data) result.data = args.data;
   if (args.pagination) result.pagination = args.pagination;
+  if (args.access_token) result.access_token = args.access_token;
 
   return result;
 };

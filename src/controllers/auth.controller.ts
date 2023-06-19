@@ -2,7 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import { ResponseMessages } from "../consts";
 import { UserService } from "../services";
 import { SignInUserInput, SignUpUserInput } from "../schemas";
-import { signJwt } from "../utils";
+import { jsonResponse, signJwt } from "../utils";
+import { UserEntity } from "../entities";
 
 export default class AuthController {
   static signUpUserHandler = async (
@@ -13,23 +14,19 @@ export default class AuthController {
     try {
       const user = await UserService.saveUser(req.body);
 
-      res.json({
+      res.json(jsonResponse<UserEntity>({
         error: false,
         message: ResponseMessages.SIGNUP_SUCCESS,
-        data: {
-          name: user.name,
-          username: user.username,
-          email: user.email,
-          phone_number: user.phone_number,
-          role: user.role,
-        },
-      });
+        data: user,
+      }));
 
     } catch (err: any) {
-      if (err.code === "23505") return res.json({
-        error: true,
-        message: ResponseMessages.USER_EXISTS,
-      });
+      if (err.code === "23505") return res.json(
+        jsonResponse<UserEntity>({
+          error: true,
+          message: ResponseMessages.USER_EXISTS,
+        }),
+      );
       next(err);
     }
   };
@@ -46,22 +43,19 @@ export default class AuthController {
       if (
         !user ||
         !(await UserService.comparePasswords(password, user.password))
-      ) return res.json({
+      ) return res.json(jsonResponse({
         error: true,
         message: ResponseMessages.INVALID_CREDENTIALS,
-      });
+      }));
 
       const accessToken = signJwt({ username });
 
-      res.json({
+      res.json(jsonResponse<UserEntity>({
         error: false,
         message: ResponseMessages.SIGNIN_SUCCESS,
-        data: {
-          username,
-          role: user.role,
-          access_token: accessToken,
-        },
-      });
+        data: { username, role: user.role },
+        access_token: accessToken,
+      }));
 
     } catch (err: any) {
       next(err);
@@ -74,12 +68,12 @@ export default class AuthController {
     next: NextFunction,
   ) => {
     try {
-      const username = res.locals.username;
+      const username: string = res.locals.username || "";
 
-      res.json({
+      res.json(jsonResponse({
         error: false,
         message: `${ResponseMessages.SIGNOUT_SUCCESS} (${username})`,
-      });
+      }));
 
     } catch (err: any) {
       next(err);

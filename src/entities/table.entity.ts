@@ -20,7 +20,7 @@ export class TableEntity extends BaseEntity {
   id!: string;
 
   @ManyToOne(() => UserEntity, (user) => user.id)
-  user_id!: UserEntity;
+  user!: UserEntity;
 
   @Column()
   number!: number;
@@ -43,11 +43,11 @@ export class TableEntity extends BaseEntity {
   note!: string;
 
   @CreateDateColumn({ type: "timestamptz" })
-  created_at!: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn({ type: "timestamptz" })
-  updated_at!: Date;
+  updatedAt!: Date;
 
   @DeleteDateColumn({ type: "timestamptz" })
-  deleted_at!: Date;
+  deletedAt!: Date;
 }

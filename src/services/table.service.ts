@@ -25,7 +25,7 @@ export default class TableService {
     number: number,
   ): Promise<TableEntity | null> =>
     await this.repository.findOneBy({
-      user_id: { id: user.id },
+      user: { id: user.id },
       number,
     });
 }

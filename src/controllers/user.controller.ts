@@ -2,7 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import { UserEntity } from "../entities";
 import { UserService } from "../services";
 import { GetRequestQuery, JsonResponse, ResponseMessages, UserRoles } from "../consts";
-import { getFindManyOptions, isValidUuid, jsonResponse, paginateResponse } from "../utils";
+import { getFindManyOptions, jsonResponse, paginateResponse } from "../utils";
+import { userOptionsSelect } from "../consts";
 
 export default class UserController {
   static getUsersHandler = async (
@@ -12,30 +13,26 @@ export default class UserController {
   ) => {
     try {
       const { id, page, limit }: Partial<GetRequestQuery> = req.query;
-      let data: UserEntity | UserEntity[] | null = null;
-      let count: number | null = null;
-      let result: JsonResponse<UserEntity> = {
+
+      if (id) res.json(jsonResponse<UserEntity>({
         error: false,
         message: ResponseMessages.GET_SUCCESS,
-      };
-
-      if (id) {
-        isValidUuid(id)
-          ? data = await UserService.findUserById(id)
-          : result.message = ResponseMessages.NOT_FOUND;
-        result = jsonResponse({ ...result, data });
-      } else {
-        [data, count] = await UserService.findUsers(
+        data: await UserService.findUserById(id),
+      }));
+      else {
+        const [data, count] = await UserService.findUsers(
           getFindManyOptions<UserEntity>(
             req.query,
-            UserService.repository.metadata,
+            userOptionsSelect,
           ),
         );
-        const pagination = paginateResponse(count, page, limit);
-        result = jsonResponse({ ...result, data, pagination });
+        res.json(jsonResponse<UserEntity>({
+          error: false,
+          message: ResponseMessages.GET_SUCCESS,
+          data,
+          pagination: paginateResponse(count, page, limit),
+        }));
       }
-
-      res.json(result);
 
     } catch (err: any) {
       next(err);
@@ -72,10 +69,10 @@ export default class UserController {
     req: Request,
     res: Response,
   ) => {
-    res.json({
+    res.json(jsonResponse<UserRoles>({
       error: false,
       message: ResponseMessages.GET_SUCCESS,
       data: Object.values(UserRoles),
-    });
+    }));
   };
 }

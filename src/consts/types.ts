@@ -23,4 +23,5 @@ export declare type JsonResponse<T> = {
   message: string;
   data?: Partial<T> | Partial<T>[] | null;
   pagination?: PaginationResponse;
+  access_token?: string;
 };

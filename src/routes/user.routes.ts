@@ -1,12 +1,34 @@
 import { Router } from "express";
-import { verifyJwt } from "../middleware";
+import { validate, verifyJwt, verifyRole } from "../middleware";
 import { UserController } from "../controllers";
+import { getQuerySchema } from "../schemas";
 
 const userRoutes = Router();
 
-userRoutes.get("/", verifyJwt, UserController.getUsersHandler);
-userRoutes.get("/roles", verifyJwt, UserController.getUserRolesHandler);
-userRoutes.patch("/", verifyJwt, UserController.updateUserHandler);
-userRoutes.delete("/", verifyJwt, UserController.deleteUserHandler);
+userRoutes.get(
+  "/",
+  verifyJwt,
+  verifyRole,
+  validate(getQuerySchema),
+  UserController.getUsersHandler,
+);
+userRoutes.get(
+  "/roles",
+  verifyJwt,
+  verifyRole,
+  UserController.getUserRolesHandler,
+);
+userRoutes.patch(
+  "/",
+  verifyJwt,
+  verifyRole,
+  UserController.updateUserHandler,
+);
+userRoutes.delete(
+  "/",
+  verifyJwt,
+  verifyRole,
+  UserController.deleteUserHandler,
+);
 
 export default userRoutes;

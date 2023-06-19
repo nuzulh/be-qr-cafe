@@ -8,9 +8,17 @@ export const signUpUserSchema = object({
     }),
     username: string()
       .min(4, "Username must be more than 4 characters")
-      .max(50, "Username must be less that 50 characters"),
+      .max(30, "Username must be less that 30 characters")
+      .regex(
+        /^[-\w\.\$@\*\!]{4,30}$/,
+        "Username can not contains space",
+      ),
     email: string().email("Invalid email address"),
-    phone_number: string(),
+    phoneNumber: string()
+      .regex(
+        /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/
+        , "Invalid phone number",
+      ),
     password: string()
       .min(6, "Password must be more than 6 characters")
       .max(32, "Password must be less than 32 characters"),
